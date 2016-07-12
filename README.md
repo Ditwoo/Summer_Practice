@@ -16,7 +16,7 @@ Wikipedia links:
     
    [Modified Weiszfeld algo](Modified_Weiszfeld.ipynb).
 
-* (-) A projected Weiszfeld algorithm for the box-canstrained Weber location problem.
+* (+-) A projected Weiszfeld algorithm for the box-canstrained Weber location problem.
 
 * (-) A Globally Convergent Algorithm for Facility Location on a Sphere.
 
