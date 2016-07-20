@@ -16,7 +16,7 @@ Wikipedia links:
     
    [Modified Weiszfeld algo](vardi2001.ipynb).
 
-* (+-) A projected Weiszfeld algorithm for the box-canstrained Weber location problem.
+* (+) A projected Weiszfeld algorithm for the box-canstrained Weber location problem.
    
    [Projected Weiszfeld algo](pilota2011.ipynb)
 
