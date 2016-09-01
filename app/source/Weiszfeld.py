@@ -24,8 +24,8 @@ class ProjectedWeiszfeld(Pilota):
 
     def __init__(self, points, weights, l, u):
         super().__init__(points, weights)
-        self.l = l  # Algo.gen_random_point(len(points[0]), -5, 0)
-        self.u = u  # Algo.gen_random_point(len(points[0]), 0, 5)
+        self.l = l
+        self.u = u
 
     def _P(self, point):
         ans = point
@@ -54,7 +54,7 @@ class ProjectedWeiszfeld(Pilota):
 class ModifiedWeiszfeld(Vardi):
 
     def _T_0(self, y):
-        for x in self.points:
+        for x in self.p:
             if np.array_equal(y, x):
                 return x
 
@@ -71,27 +71,24 @@ class NewAlgorithm(Vardi):
 
     def _tilde_R(self, y):
         ans = np.zeros(len(y))
-        for i in range(len(self.points)):
-            if not np.array_equal(self.points[i], y):
-                ans = ans + (self.points[i] - y) * self.weights[i] / distance.euclidean(self.points[i], y)
+        for i in range(len(self.p)):
+            if not np.array_equal(self.p[i], y):
+                ans = ans + (self.p[i] - y) * self.w[i] / distance.euclidean(self.p[i], y)
         return ans
 
     def _r(self, y):
         return distance.euclidean(0, self._tilde_R(y))
 
     def _eta(self, y):
-        for k in range(len(self.points)):
-            if np.array_equal(y, self.points[k]):
-                return self.weights[k]
+        for k in range(len(self.p)):
+            if np.array_equal(y, self.p[k]):
+                return self.w[k]
 
         return 0
 
     def _new_tilde_T(self, y):
         tmp = self._eta(y) / self._r(y)
-        print(tmp, max(0, 1 - tmp) * self._tilde_T(y), min(1, tmp) * y)
-        ans = max(0, 1 - tmp) * self._tilde_T(y)
-        ans = ans + min(1, tmp) * y
-        return ans
+        return max(0, 1 - tmp) * self._tilde_T(y) + min(1, tmp) * y
 
     def solve(self, x_0, epsilon):
         self.x = [x_0, self._new_tilde_T(x_0)]

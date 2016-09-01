@@ -26,8 +26,8 @@ class MainWindow(ttk.Frame):
 
     def _first_load(self):
         # show started point
-        self.start_point_frame.grid(column=1, row=2)
-        self._init_started_points(parent=self.start_point_frame, dim=len(self.points[0]))
+        self.start_point_frame.grid(row=5, column=0, rowspan=4)
+        self._init_start_frame(parent=self.start_point_frame, dim=len(self.points[0]))
 
         sz = [int(it.get()) for it in self.size_entry]
 
@@ -76,8 +76,7 @@ class MainWindow(ttk.Frame):
                 self.status_lbl['text'] = 'There is no started point'
                 return
 
-        y_0 = [float(entry.get()) for entry in self.spoint]
-        print(y_0)
+        y_0 = np.array([float(entry.get()) for entry in self.spoint])
 
         curr_method = self.method.get()
 
@@ -85,8 +84,8 @@ class MainWindow(ttk.Frame):
             algo = Weiszfeld.Weiszfeld(self.points, self.weights)
 
         elif curr_method == self._methods[1]:
-            l = Utils.gen_random_point(len(self.points[0]), -5, 0)
-            u = Utils.gen_random_point(len(self.points[0]), 0, 5)
+            l = [float(entry.get()) for entry in self.lpoint]
+            u = [float(entry.get()) for entry in self.upoint]
 
             algo = Weiszfeld.ProjectedWeiszfeld(self.points, self.weights, l, u)
 
@@ -101,9 +100,7 @@ class MainWindow(ttk.Frame):
 
         if curr_method == self._methods[1]:
             # self.lu_lbl['text'] = str(algo.l) + '\n' + str(algo.u)
-            self.frame = PlotWindow(self.out_frame,
-                                    curr_method + '\nl: ' + str(algo.l) + '\nu: ' + str(algo.u),
-                                    self.points, algo.x, algo.l, algo.u,
+            self.frame = PlotWindow(self.out_frame, curr_method, self.points, algo.x, algo.l, algo.u,
                                     figure_size=sz)
         else:
             # self.lu_lbl['text'] = ''
@@ -136,8 +133,11 @@ class MainWindow(ttk.Frame):
 
             self.size_entry.append(entry)
 
-    def _init_started_points(self, parent, dim):
+    def _init_start_frame(self, parent, dim):
         self.spoint = []
+        self.lpoint = []
+        self.upoint = []
+
         for i in range(dim):
             lbl = ttk.Label(parent, text='x{0}'.format(i + 1))
             lbl.grid(column=0, row=i)
@@ -147,6 +147,26 @@ class MainWindow(ttk.Frame):
             entry.delete(0, tk.END)
             entry.insert(0, '1')
             self.spoint.append(entry)
+
+            lbl = ttk.Label(parent, text='l{0}'.format(i + 1))
+            lbl.grid(column=2, row=i)
+
+            entry = ttk.Entry(parent, width=5)
+            entry.grid(column=3, row=i)
+            entry.delete(0, tk.END)
+            entry.insert(0, '-1')
+
+            self.lpoint.append(entry)
+
+            lbl = ttk.Label(parent, text='u{0}'.format(i + 1))
+            lbl.grid(column=4, row=i)
+
+            entry = ttk.Entry(parent, width=5)
+            entry.grid(column=5, row=i)
+            entry.delete(0, tk.END)
+            entry.insert(0, '1')
+
+            self.upoint.append(entry)
 
     def init_gui(self):
         self.root.title('Algorithmico')
@@ -167,11 +187,11 @@ class MainWindow(ttk.Frame):
 
         self.metbox = tk.OptionMenu(self, self.method, *self._methods)
         self.metbox.config(width=20)
-        self.metbox.grid(column=0, row=1)
+        self.metbox.grid(row=1, column=0)
 
         # run
         self.calc_button = ttk.Button(self, text='Run', command=self.on_run)
-        self.calc_button.grid(column=1, row=1)
+        self.calc_button.grid(row=2, column=0)
 
         # label for algorithm
         # self.lu_lbl = ttk.Label(self, text='')
@@ -179,7 +199,7 @@ class MainWindow(ttk.Frame):
 
         # figure size
         self.size_frame = ttk.LabelFrame(self, text='Figure size')
-        self.size_frame.grid(column=0, row=2)
+        self.size_frame.grid(row=3, column=0)
         self._init_figure_size_params(self.size_frame)
 
         # started point
@@ -187,13 +207,13 @@ class MainWindow(ttk.Frame):
 
         # status
         self.status_frame = ttk.LabelFrame(self, text='Status:')
-        self.status_frame.grid(column=0, row=3)
+        self.status_frame.grid(row=4, column=0, sticky='nesw')
         self.status_lbl = ttk.Label(self.status_frame, text='OK')
         self.status_lbl.grid(column=0, row=0)
 
         # output section
         self.out_frame = ttk.LabelFrame(self, text='Output', width=600, height=600)
-        self.out_frame.grid(column=0, row=4, columnspan=4, sticky='nesw')
+        self.out_frame.grid(row=1, column=1, columnspan=4, rowspan=8, sticky='nesw')
 
         # initialise all widgets
         for child in self.winfo_children():
