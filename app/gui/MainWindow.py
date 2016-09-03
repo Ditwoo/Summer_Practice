@@ -84,8 +84,8 @@ class MainWindow(ttk.Frame):
             algo = Weiszfeld.Weiszfeld(self.points, self.weights)
 
         elif curr_method == self._methods[1]:
-            l = [float(entry.get()) for entry in self.lpoint]
-            u = [float(entry.get()) for entry in self.upoint]
+            l = np.array([float(entry.get()) for entry in self.lpoint])
+            u = np.array([float(entry.get()) for entry in self.upoint])
 
             algo = Weiszfeld.ProjectedWeiszfeld(self.points, self.weights, l, u)
 
@@ -213,7 +213,7 @@ class MainWindow(ttk.Frame):
 
         # output section
         self.out_frame = ttk.LabelFrame(self, text='Output', width=600, height=600)
-        self.out_frame.grid(row=1, column=1, columnspan=4, rowspan=8, sticky='nesw')
+        self.out_frame.grid(row=1, column=1, columnspan=4, rowspan=10, sticky='nesw')
 
         # initialise all widgets
         for child in self.winfo_children():
