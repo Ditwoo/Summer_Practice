@@ -14,8 +14,8 @@ def some_pilota():
     print('>>>', wsfd.x[-1])
 
     prj_wsfd = Weiszfeld.ProjectedWeiszfeld(a, w,
-                                            Utils.gen_random_point(len(a[0]), -5, 0),
-                                            Utils.gen_random_point(len(a[0]), 0, 5))
+                                            Utils.PGenerator.gen_random_point(len(a[0]), -5, 0),
+                                            Utils.PGenerator.gen_random_point(len(a[0]), 0, 5))
     prj_wsfd.solve(y_0, 1e-10)
     print('>>>', prj_wsfd.x[-1])
     print('###', prj_wsfd.l)

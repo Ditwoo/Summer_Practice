@@ -7,7 +7,8 @@ from tkinter.filedialog import askopenfilename
 import numpy as np
 
 from gui.PlotWindow import PlotWindow
-from source import Weiszfeld, Utils
+from source import Weiszfeld
+from source.Utils import PManager, PGenerator
 
 
 class MainWindow(ttk.Frame):
@@ -43,12 +44,12 @@ class MainWindow(ttk.Frame):
                                 filetypes=(("Template files", "*.txt"),
                                            (".txt files", "*.txt"),
                                            ("All files", "*.*")))
-        self.points, self.weights = Utils.read_points(fname)
+        self.points, self.weights = PManager.read_points(fname)
         self._first_load()
 
     def on_random_test(self):
         dim = 3
-        self.points, self.weights = Utils.gen_random_points(dim)
+        self.points, self.weights = PGenerator.gen_random_points(dim)
         self._first_load()
 
     def on_quit(self):
@@ -84,8 +85,8 @@ class MainWindow(ttk.Frame):
             algo = Weiszfeld.Weiszfeld(self.points, self.weights)
 
         elif curr_method == self._methods[1]:
-            l = np.array([float(entry.get()) for entry in self.lpoint])
-            u = np.array([float(entry.get()) for entry in self.upoint])
+            l = [float(entry.get()) for entry in self.lpoint]
+            u = [float(entry.get()) for entry in self.upoint]
 
             algo = Weiszfeld.ProjectedWeiszfeld(self.points, self.weights, l, u)
 
