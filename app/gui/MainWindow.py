@@ -2,6 +2,7 @@ import random
 import tkinter as tk
 from os import getcwd
 from tkinter import ttk
+from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 
 import numpy as np
@@ -39,6 +40,9 @@ class MainWindow(ttk.Frame):
         self.frame.grid(column=0, row=0, sticky="nsew")
         self.frame.tkraise()
 
+    def _gen_error_window(self, message):
+        messagebox.showerror(title='Error!', message=message) 
+
     def on_load_file(self):
         fname = askopenfilename(initialdir=getcwd(),
                                 filetypes=(("Template files", "*.txt"),
@@ -66,7 +70,7 @@ class MainWindow(ttk.Frame):
             return
 
         if len(self.points) == 0:
-            self.status_lbl['text'] = 'There is no points'
+            self._gen_error_window('There is no points!')
             return
 
         if len(self.weights) == 0:
@@ -74,7 +78,7 @@ class MainWindow(ttk.Frame):
 
         for entry in self.spoint:
             if '' is entry.get():
-                self.status_lbl['text'] = 'There is no started point'
+                self._gen_error_window('There is no started point!')
                 return
 
         y_0 = np.array([float(entry.get()) for entry in self.spoint])
@@ -97,7 +101,7 @@ class MainWindow(ttk.Frame):
             algo = Weiszfeld.NewAlgorithm(self.points, self.weights)
 
         algo.solve(y_0, self._epsilon)
-        self.status_lbl['text'] = str(algo.x[-1])
+        self.answer_lbl['text'] = str(algo.x[-1])
 
         if curr_method == self._methods[1]:
             # self.lu_lbl['text'] = str(algo.l) + '\n' + str(algo.u)
@@ -209,8 +213,8 @@ class MainWindow(ttk.Frame):
         # status
         self.status_frame = ttk.LabelFrame(self, text='Status:')
         self.status_frame.grid(row=4, column=0, sticky='nesw')
-        self.status_lbl = ttk.Label(self.status_frame, text='OK')
-        self.status_lbl.grid(column=0, row=0)
+        self.answer_lbl = ttk.Label(self.status_frame, text='OK')
+        self.answer_lbl.grid(column=0, row=0)
 
         # output section
         self.out_frame = ttk.LabelFrame(self, text='Output', width=600, height=600)

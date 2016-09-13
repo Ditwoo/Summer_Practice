@@ -17,6 +17,18 @@ from source.Utils import PManager
 
 
 class PlotWindow(tk.Frame):
+    colors = {'tomato': '#FF6347',
+              'maroon': '#800000',
+              'orangered': '#FF4500',
+              'aliceblue': '#F0F8FF',
+              'lightskyblue': '#87CEFA',
+              'darkslateblue': '#483D8B',
+              'mediumslateblue': '#7B68EE',
+              'peachpuff': '#FFDAB9',
+              'greenyellow': '#ADFF2F',
+              'olive': '#808000',
+              'forestgreen': '#228B22'}
+
     def __init__(self, parent,
                  method,
                  points, steps=None,
@@ -26,38 +38,43 @@ class PlotWindow(tk.Frame):
 
         fig = Figure(figsize=figure_size, dpi=100)
         canvas = FigureCanvasTkAgg(fig, self)  # must be before ax (for rotating plot)
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111, projection='3d', autoscale_on=True)
 
         x, y, z = PManager.parse_points(points)
-        ax.plot(x, y, z, 'g.', alpha=0.6)
+        ax.plot(x, y, z, color=self.colors['forestgreen'], marker='.', linestyle='', alpha=1)
 
         if steps is not None:
             x, y, z = PManager.parse_points(steps)
-            ax.plot(x, y, z, 'r.', alpha=0.6)
+            ax.plot(x, y, z, color=self.colors['tomato'], marker='.', ls='-.', alpha=1)
+
+            # started point and last point
+            x, y, z = PManager.parse_points([steps[0], steps[len(steps) - 1]])
+            ax.plot(x, y, z, color=self.colors['maroon'], marker='.', ls ='', alpha=1)
 
         if 'Projected Weiszfeld' in method:
             if l is None or u is None:
                 raise Warning('l or u is None')
             else:
                 srf_alpha = 0.05
+                srf_colo = self.colors['greenyellow']
                 try:
                     x, y, z = PlotWindow._get_surface(u, 'x', (l[1], u[1], l[2], u[2]))
-                    ax.plot_surface(x, y, z, color='b', alpha=srf_alpha)
+                    ax.plot_surface(x, y, z, color=srf_colo, alpha=srf_alpha)
 
                     x, y, z = PlotWindow._get_surface(u, 'y', (l[0], u[0], l[2], u[2]))
-                    ax.plot_surface(x, y, z, color='b', alpha=srf_alpha)
+                    ax.plot_surface(x, y, z, color=srf_colo, alpha=srf_alpha)
 
                     x, y, z = PlotWindow._get_surface(u, 'z', (l[0], u[0], l[1], u[1]))
-                    ax.plot_surface(x, y, z, color='b', alpha=srf_alpha)
+                    ax.plot_surface(x, y, z, color=srf_colo, alpha=srf_alpha)
 
                     x, y, z = PlotWindow._get_surface(l, 'x', (l[1], u[1], l[2], u[2]))
-                    ax.plot_surface(x, y, z, color='b', alpha=srf_alpha)
+                    ax.plot_surface(x, y, z, color=srf_colo, alpha=srf_alpha)
 
                     x, y, z = PlotWindow._get_surface(l, 'y', (l[0], u[0], l[2], u[2]))
-                    ax.plot_surface(x, y, z, color='b', alpha=srf_alpha)
+                    ax.plot_surface(x, y, z, color=srf_colo, alpha=srf_alpha)
 
                     x, y, z = PlotWindow._get_surface(l, 'z', (l[0], u[0], l[1], u[1]))
-                    ax.plot_surface(x, y, z, color='b', alpha=srf_alpha)
+                    ax.plot_surface(x, y, z, color=srf_colo, alpha=srf_alpha)
                 except ValueError as er:
                     print(er)
 
